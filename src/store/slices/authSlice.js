@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signUpRequest } from "../thunks/authThunk";
+import { signInRequest, signUpRequest } from "../thunks/authThunk";
 
 export const authSlice = createSlice({
   name: "auth",
@@ -20,5 +20,9 @@ export const authSlice = createSlice({
       .addCase(signUpRequest.rejected, (state, action) => {
         state.registrationStatus = action.payload;
       });
+
+    builder.addCase(signInRequest.fulfilled, (state, action) => {
+      state.role = action.payload.data.role;
+    });
   },
 });

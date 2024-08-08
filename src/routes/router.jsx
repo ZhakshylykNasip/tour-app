@@ -1,5 +1,4 @@
-import { createBrowserRouter, Link, Navigate } from "react-router-dom";
-// import App from "../App";
+import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import { TourInfo } from "../pages/TourInfo";
 import { RegisterPage } from "../pages/RegisterPage";
 import { UserPage } from "../pages/UserPage";
@@ -7,6 +6,10 @@ import { AdminPage } from "../pages/AdminPage";
 import { LoginPage } from "../pages/LoginPage";
 import { Layout } from "../layout/Layout";
 import { MainPage } from "../pages/MainPage";
+import { PrivateRoute } from "./PrivateRoute";
+
+const authData = JSON.parse(localStorage.getItem("auth")) || {};
+const role = authData?.data?.role;
 
 export const router = createBrowserRouter([
   {
@@ -15,32 +18,68 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <MainPage />,
+        element: (
+          <PrivateRoute
+            Component={<MainPage />}
+            fallBackPath="/login"
+            isAllowed={!role}
+          />
+        ),
       },
       {
         path: "/tourInfo/:tourId",
-        element: <TourInfo />,
+        element: (
+          <PrivateRoute
+            Component={<TourInfo />}
+            fallBackPath="/login"
+            isAllowed={!role}
+          />
+        ),
       },
 
       {
         path: "/user",
-        element: <UserPage />,
+        element: (
+          <PrivateRoute
+            Component={<UserPage />}
+            fallBackPath="/login"
+            isAllowed={role !== "USER"}
+          />
+        ),
       },
 
       {
         path: "/admin",
-        element: <AdminPage />,
+        element: (
+          <PrivateRoute
+            Component={<AdminPage />}
+            fallBackPath="/login"
+            isAllowed={role !== "ADMIN"}
+          />
+        ),
       },
     ],
   },
 
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: (
+      <RegisterPage
+        Component={<RegisterPage />}
+        fallBackPath="/"
+        isAllowed={role}
+      />
+    ),
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: (
+      <PrivateRoute
+        Component={<LoginPage />}
+        fallBackPath="/"
+        isAllowed={role}
+      />
+    ),
   },
   {
     path: "*",
