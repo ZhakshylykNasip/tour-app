@@ -14,7 +14,10 @@ export const Login = () => {
     formState: { errors },
   } = useForm({
     mode: "onBlur",
-    defaultValues: {},
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const submitHandler = (userData) => {
@@ -37,6 +40,7 @@ export const Login = () => {
                 value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                 message: "не правильно введен email",
               },
+
             })}
             placeholder="введите email"
           />
